@@ -28,7 +28,7 @@ function getText(evt){
     var d = new Date();
     var n = d.getTime();
     console.log("Inside get text");
-    sendText("Hello");
+    sendText(json);
 }
 function sendText(json) {
     console.log("sending text: " + json);

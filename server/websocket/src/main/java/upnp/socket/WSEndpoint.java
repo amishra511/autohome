@@ -15,12 +15,14 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+import upnp.socket.communicate.translate.MessageDecoder;
+import upnp.socket.communicate.translate.MessageEncoder;
 
 /**
  *
  * @author Ashish
  */
-@ServerEndpoint("/upnpendpoint")
+@ServerEndpoint(value="/upnpendpoint",encoders = {MessageEncoder.class}, decoders = {MessageDecoder.class})
 public class WSEndpoint {
 
     private static Set<Session> peers = Collections.synchronizedSet(new HashSet<Session>());
