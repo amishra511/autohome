@@ -15,6 +15,7 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+import upnp.socket.communicate.RequestMessage;
 import upnp.socket.communicate.translate.MessageDecoder;
 import upnp.socket.communicate.translate.MessageEncoder;
 
@@ -28,7 +29,7 @@ public class WSEndpoint {
     private static Set<Session> peers = Collections.synchronizedSet(new HashSet<Session>());
 
     @OnMessage
-    public void onMessage(String message, Session session)throws IOException, EncodeException {
+    public void onMessage(RequestMessage message, Session session)throws IOException, EncodeException {
         System.out.println("--Message--"+message);  
                  for (Session peer : peers) {
             if (!peer.equals(session)) {

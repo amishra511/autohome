@@ -44,7 +44,7 @@ public class TestStandAloneWthCompMesge {
         Session session = null;
         try {
             container = ContainerProvider.getWebSocketContainer();
-            session = container.connectToServer(StanaloneClient.class, URI.create("ws://localhost:8080/websocket/upnpendpoint"));
+            session = container.connectToServer(StanaloneClient.class, URI.create("ws://localhost:8089/websocket/upnpendpoint"));
             wait4TerminateSignal();
         } catch (Exception e) {
             e.printStackTrace();
