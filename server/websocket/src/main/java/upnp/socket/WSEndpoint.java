@@ -5,9 +5,11 @@
  */
 package upnp.socket;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -24,8 +26,13 @@ public class WSEndpoint {
     private static Set<Session> peers = Collections.synchronizedSet(new HashSet<Session>());
 
     @OnMessage
-    public String onMessage(String message) {
-        return null;
+    public void onMessage(String message, Session session)throws IOException, EncodeException {
+        System.out.println("--Message--"+message);  
+                 for (Session peer : peers) {
+            if (!peer.equals(session)) {
+                peer.getBasicRemote().sendObject(message);
+            }
+        }
     }
 
     @OnOpen

@@ -8,21 +8,54 @@
 var wsUri = "ws://" + document.location.host + document.location.pathname + "upnpendpoint";
 var websocket = new WebSocket(wsUri);
 
-websocket.onerror = function(evt) { onError(evt); };
-
-function onError(evt) {
-    writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
-}
-
-var output = document.getElementById("output");
-websocket.onopen = function(evt) { onOpen(evt) };
-
+//Function that outputs a message on webpage
 function writeToScreen(message) {
     output.innerHTML += message + "<br>";
 }
 
-function onOpen() {
+//Adds an event listener to canvas element when it is clicked
+var canvas = document.getElementById("myCanvas");
+canvas.addEventListener("click", getText, false);
+
+
+//Set of functions to send messages to web socket endpoint
+   var json = JSON.stringify({
+        "operation": "test",
+        "deviceId": "test",
+        "deviceState": "1"
+    });
+function getText(evt){
+    var d = new Date();
+    var n = d.getTime();
+    console.log("Inside get text");
+    sendText("Hello");
+}
+function sendText(json) {
+    console.log("sending text: " + json);
+    websocket.send(json);
+}
+
+//Action on Error
+websocket.onerror = function(evt) { onError(evt); };
+function onError(evt) {
+    writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+}
+
+//Action on open
+var output = document.getElementById("output");
+websocket.onopen = function(evt) { onOpen(evt) };
+
+
+
+function onOpen(evt) {
     writeToScreen("Connected to " + wsUri);
 }
 
+//On receiving message
+websocket.onmessage = function(evt) { onMessage(evt) };
+function onMessage(evt) {
+    console.log("received: " + evt.data);
+    writeToScreen("Message received: " + evt.data);
+//    drawImageText(evt.data);
+}
 // End test functions
