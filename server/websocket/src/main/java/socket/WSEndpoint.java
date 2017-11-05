@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package upnp.socket;
+package socket;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -15,9 +15,9 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import upnp.socket.communicate.RequestMessage;
-import upnp.socket.communicate.translate.MessageDecoder;
-import upnp.socket.communicate.translate.MessageEncoder;
+import socket.communicate.RequestMessage;
+import socket.communicate.translate.MessageDecoder;
+import socket.communicate.translate.MessageEncoder;
 
 /**
  *

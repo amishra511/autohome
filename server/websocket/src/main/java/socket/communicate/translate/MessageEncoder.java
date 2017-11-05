@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package upnp.socket.communicate.translate;
+package socket.communicate.translate;
 
 /**
  *
@@ -13,7 +13,7 @@ package upnp.socket.communicate.translate;
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
-import upnp.socket.communicate.RequestMessage;
+import socket.communicate.RequestMessage;
 
 /**
  *

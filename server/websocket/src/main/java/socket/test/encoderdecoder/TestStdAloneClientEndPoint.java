@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package upnp.socket.test.encoderdecoder;
+package socket.test.encoderdecoder;
 
 import java.io.IOException;
 import javax.websocket.Endpoint;
@@ -11,7 +11,7 @@ import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
-import upnp.socket.communicate.RequestMessage;
+import socket.communicate.RequestMessage;
 
 /**
  *

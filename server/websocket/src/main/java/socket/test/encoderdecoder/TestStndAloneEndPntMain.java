@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package upnp.socket.test.encoderdecoder;
+package socket.test.encoderdecoder;
 
+import socket.test.encoderdecoder.TestStdAloneClientEndPoint;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +13,8 @@ import javax.websocket.ClientEndpointConfig;
 import javax.websocket.ContainerProvider;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
-import upnp.socket.communicate.translate.MessageDecoder;
-import upnp.socket.communicate.translate.MessageEncoder;
+import socket.communicate.translate.MessageDecoder;
+import socket.communicate.translate.MessageEncoder;
 
 /**
  *
