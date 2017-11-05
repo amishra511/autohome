@@ -20,7 +20,8 @@ import upnp.socket.test.StanaloneClient;
  */
 @ClientEndpoint
 public class TestStandAloneWthCompMesge {
-       private static final Object waitLock = new Object();
+       private static final Object WAIT_LOCK = new Object();
+       private static final String ENDPOINT_URL = "ws://homeau2ma10n-env.pke2qi6wrq.us-east-1.elasticbeanstalk.com/upnpendpoint";
 
     @OnMessage
     public void onMessage(RequestMessage param) {
@@ -30,9 +31,9 @@ public class TestStandAloneWthCompMesge {
 
     private static void wait4TerminateSignal() {
 
-        synchronized (waitLock) {
+        synchronized (WAIT_LOCK) {
             try {
-                waitLock.wait();
+                WAIT_LOCK.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -44,7 +45,7 @@ public class TestStandAloneWthCompMesge {
         Session session = null;
         try {
             container = ContainerProvider.getWebSocketContainer();
-            session = container.connectToServer(StanaloneClient.class, URI.create("ws://localhost:8089/websocket/upnpendpoint"));
+            session = container.connectToServer(StanaloneClient.class, URI.create(ENDPOINT_URL));
             wait4TerminateSignal();
         } catch (Exception e) {
             e.printStackTrace();
