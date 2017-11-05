@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package upnp.socket.client;
+package socket;
 
 import java.net.URI;
 import javax.websocket.ClientEndpoint;
