@@ -5,12 +5,18 @@
  */
 package socket;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
+import javax.json.JsonObject;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.ContainerProvider;
 import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
+import socket.communicate.Request;
+import socket.upnp.Controller;
+
 /**
  *
  * @author Ashish
@@ -18,13 +24,50 @@ import javax.websocket.WebSocketContainer;
 
 @ClientEndpoint
 public class StndAloneClient {
-          private static final Object WAIT_LOCK = new Object();
-       private static final String ENDPOINT_URL = "ws://homeau2ma10n-env.pke2qi6wrq.us-east-1.elasticbeanstalk.com/upnpendpoint";
+
+    private static final Object WAIT_LOCK = new Object();
+//       private static final String ENDPOINT_URL = "ws://homeau2ma10n-env.pke2qi6wrq.us-east-1.elasticbeanstalk.com/upnpendpoint";
+    private static final String ENDPOINT_URL = "ws://localhost:8080/websocket/upnpendpoint";
+
+    Session userSession = null;
+
+//    @OnOpen
+//    public void onOpen(Session userSession) {
+//        System.out.println("Opening websocket");
+//        this.userSession = userSession;
+//    }
 
     @OnMessage
-    public void onMessage(String param) {
-        System.out.println("Recieved message at java client");
-        System.out.println(param);
+    public void onMessage(String param, Session session) {
+        try {
+            System.out.println("Recieved message at java client");
+            System.out.println(param);
+            ObjectMapper mapper = new ObjectMapper();
+            Request req = mapper.readValue(param, Request.class);
+            req.setDeviceId("Weemo");
+            String outJson = mapper.writeValueAsString(req);
+            
+            System.out.println("---Requested operation name---");
+            System.out.println(req.getOperation());
+            if (null != req.getOperation()) {
+                if ("discover".equals(req.getOperation())) {
+                    String deviceDetails = Controller.discoverUpnpDevices();
+                    System.out.println("---Device discovery results---");
+                    System.out.println(deviceDetails);
+                    System.out.println("---Session Id Client---"+session.getId());
+                    if(null != deviceDetails){
+                        session.getBasicRemote().sendText(outJson);
+                    }
+                    else{
+                        System.out.println("-----Data is null-----------");
+                    }
+                }
+            }
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        }
+
+//        JsonObject jsonObject = new JsonObject(param);
     }
 
     private static void wait4TerminateSignal() {

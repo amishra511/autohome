@@ -23,15 +23,15 @@ import socket.communicate.translate.MessageEncoder;
  *
  * @author Ashish
  */
-@ServerEndpoint(value="/upnpendpoint",encoders = {MessageEncoder.class}, decoders = {MessageDecoder.class})
+@ServerEndpoint(value = "/upnpendpoint", encoders = {MessageEncoder.class}, decoders = {MessageDecoder.class})
 public class WSEndpoint {
 
     private static Set<Session> peers = Collections.synchronizedSet(new HashSet<Session>());
 
     @OnMessage
-    public void onMessage(RequestMessage message, Session session)throws IOException, EncodeException {
-        System.out.println("--Message--"+message);  
-                 for (Session peer : peers) {
+    public void onMessage(RequestMessage message, Session session) throws IOException, EncodeException {
+        System.out.println("--Message--" + message);
+        for (Session peer : peers) {
             if (!peer.equals(session)) {
                 peer.getBasicRemote().sendObject(message);
             }

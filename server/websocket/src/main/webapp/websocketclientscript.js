@@ -17,7 +17,6 @@ function writeToScreen(message) {
 var canvas = document.getElementById("myCanvas");
 canvas.addEventListener("click", getText, false);
 
-
 //Set of functions to send messages to web socket endpoint
    var json = JSON.stringify({
         "operation": "test",
@@ -33,6 +32,22 @@ function getText(evt){
 function sendText(json) {
     console.log("sending text: " + json);
     websocket.send(json);
+}
+
+
+//Adds an event listener to button when it is clicked
+var btnDisc = document.getElementById("btnDisc");
+btnDisc.addEventListener("click", sendDiscoveryReq, false);
+
+  var discvryReq = JSON.stringify({
+        "operation": "discover",
+        "deviceId": "",
+        "deviceState": ""
+    });
+
+function sendDiscoveryReq(){
+    console.log("--sending discovery request--");
+    websocket.send(discvryReq);
 }
 
 //Action on Error
