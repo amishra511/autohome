@@ -10,7 +10,6 @@ package socket.communicate;
  * @author Ashish
  */
 public class Request {
-    
     private String operation;
     private String deviceId;
     private String deviceState;
@@ -18,14 +17,13 @@ public class Request {
     public Request(){
         
     }
-    
     public Request(String operation, String deviceId, String deviceState){
         this.operation = operation;
         this.deviceId = deviceId;
         this.deviceState = deviceState;
     }
-
-    public void setOperation(String operation) {
+    
+      public void setOperation(String operation) {
         this.operation = operation;
     }
 
@@ -48,6 +46,4 @@ public class Request {
     public String getDeviceState() {
         return deviceState;
     }
-    
 }
-

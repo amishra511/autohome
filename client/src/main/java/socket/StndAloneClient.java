@@ -7,6 +7,7 @@ package socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
+import java.util.List;
 import javax.json.JsonObject;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.ContainerProvider;
@@ -16,6 +17,7 @@ import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 import socket.communicate.Request;
 import socket.upnp.Controller;
+import socket.upnp.Device;
 
 /**
  *
@@ -51,10 +53,11 @@ public class StndAloneClient {
             System.out.println(req.getOperation());
             if (null != req.getOperation()) {
                 if ("discover".equals(req.getOperation())) {
-                    String deviceDetails = Controller.discoverUpnpDevices();
+                    List<Device> deviceDetails = Controller.discoverUpnpDevices();
                     System.out.println("---Device discovery results---");
-                    System.out.println(deviceDetails);
-                    System.out.println("---Session Id Client---"+session.getId());
+                    for(Device dev:deviceDetails){
+                        System.out.println(dev.toString());
+                    }
                     if(null != deviceDetails){
                         session.getBasicRemote().sendText(outJson);
                     }

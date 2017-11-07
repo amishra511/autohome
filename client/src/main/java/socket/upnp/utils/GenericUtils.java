@@ -5,11 +5,21 @@
  */
 package socket.upnp.utils;
 
+import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import socket.upnp.Device;
 
 /**
  *
@@ -22,14 +32,15 @@ public class GenericUtils {
     private static final Integer MULTICAST_PORT = 1901;
     private static final Integer UPNP_PORT = 1900;
     private static final String DEVICE_TYPE_UPNP_ROOT = "upnp:rootdevice";
-    private static final Integer LISTEN_WAIT_TIME = 4; //In seconds
+    private static final Integer LISTEN_WAIT_TIME = 10; //In seconds
 
-    public static String findDevices(){
+    public static List findDevices(){
         sendDiscoveryRequest();
         return listenDiscoveryResponse();
     }
     
      private static void sendDiscoveryRequest() {
+         
         try {
             InetSocketAddress socketAddress = new InetSocketAddress(InetAddress.getByName(UPNP_IP_ADDRESS), UPNP_PORT);
             MulticastSocket socket = new MulticastSocket(null);
@@ -56,8 +67,8 @@ public class GenericUtils {
             e1.printStackTrace();
         }
     }
-    private static String listenDiscoveryResponse() {
-        String deviceDetails = null;
+    private static List listenDiscoveryResponse() {
+        List devList = new ArrayList();
         try {
             MulticastSocket recSocket = new MulticastSocket(null);
             recSocket.bind(new InetSocketAddress(InetAddress.getByName(MULTICAST_IP_ADDRESS), MULTICAST_PORT));
@@ -73,12 +84,15 @@ public class GenericUtils {
                 DatagramPacket input = new DatagramPacket(buf, buf.length);
                 try {
                     recSocket.receive(input);
-                    String rawResponse = new String(input.getData());
-                    String originalAddr = input.getAddress().getHostName();
-                    
+                    String data = new String(input.getData());
+                    String hostName = input.getAddress().getHostName();
+                    Device retDevc = getUpnpDevice(data);
+                    if(null != retDevc){
+                        retDevc.setHostAddress(hostName);
+                        devList.add(retDevc);
+                    }
 //                    System.out.println("Data: " + rawResponse);
 //                    System.out.println("Host Name: " + originalAddr);
-                    deviceDetails = rawResponse;
 //                    System.out.println(input.getSocketAddress().toString());
 
                 } catch (Exception e) {
@@ -90,6 +104,65 @@ public class GenericUtils {
         } catch (Exception exp) {
             exp.printStackTrace();
         }
-        return deviceDetails;
+        return devList;
+    }
+    
+    private static Device getUpnpDevice(String payload) {
+        System.out.println("----------Inside parse method---------");
+        Device dvc = null;
+        String[] lines = payload.split("\r\n|\r|\n");
+        for (String line : lines) {
+            if (line.startsWith("LOCATION")) {
+                String location = line.substring(line.indexOf(":") + 1);
+                System.out.println(location);
+                dvc = getDeviceDetails(location);
+            }
+        }
+        return dvc;
+    }
+     public static Device getDeviceDetails(String path){
+        Device devc = new Device();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();       
+        try {
+             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            URL url = new URL(path);
+            InputStream stream = url.openStream();
+            Document doc = docBuilder.parse(stream);
+            doc.getDocumentElement().normalize();
+//            System.out.println("Root element of the doc is "
+//                    + doc.getDocumentElement().getNodeName());
+            NodeList nList =  doc.getElementsByTagName("device");
+            Node device = nList.item(0);
+            NodeList devProp = device.getChildNodes();
+            for(int i =0; i<devProp.getLength(); i++){
+               Node prop = devProp.item(i);
+               if("deviceType".equalsIgnoreCase(prop.getNodeName())){
+                   System.out.println("Device Type:"+ prop.getTextContent());
+                   devc.setDeviceType(prop.getTextContent());
+                }
+               if("friendlyName".equalsIgnoreCase(prop.getNodeName())){
+                   System.out.println("Device Name:"+ prop.getTextContent());
+                   devc.setDeviceName(prop.getTextContent());
+               }
+               if("manufacturer".equalsIgnoreCase(prop.getNodeName())){
+                   System.out.println("Device manufacturer:"+ prop.getTextContent());
+                   devc.setManufacturer(prop.getTextContent());
+               }
+               if("modelName".equalsIgnoreCase(prop.getNodeName())){
+                   System.out.println("Device manufacturer:"+ prop.getTextContent());
+                   devc.setModelName(prop.getTextContent());
+               }
+               if("modelDescription".equalsIgnoreCase(prop.getNodeName())){
+                   System.out.println("Device manufacturer:"+ prop.getTextContent());
+                   devc.setModelDesc(prop.getTextContent());
+               }
+               
+            }
+            
+                    
+        } catch (Exception exp) {
+                exp.printStackTrace();
+        }
+        return devc;
     }
 }
