@@ -17,17 +17,21 @@ function writeToScreen(message) {
 var canvas = document.getElementById("myCanvas");
 canvas.addEventListener("click", getText, false);
 
+//Payload json
+//{"request":{"operation":"test","deviceId":"dev","deviceState":"state"},"response":null}
+//
 //Set of functions to send messages to web socket endpoint
-   var json = JSON.stringify({
-        "operation": "test",
+   var reqDiscover = JSON.stringify({"request":{
+        "operation": "discover",
         "deviceId": "test",
-        "deviceState": "1"
+        "deviceState": "1"},
+    "response":null
     });
 function getText(evt){
     var d = new Date();
     var n = d.getTime();
     console.log("Inside get text");
-    sendText(json);
+    sendText(reqDiscover);
 }
 function sendText(json) {
     console.log("sending text: " + json);
@@ -39,15 +43,15 @@ function sendText(json) {
 var btnDisc = document.getElementById("btnDisc");
 btnDisc.addEventListener("click", sendDiscoveryReq, false);
 
-  var discvryReq = JSON.stringify({
-        "operation": "discover",
-        "deviceId": "",
-        "deviceState": ""
-    });
+//  var discvryReq = JSON.stringify({
+//        "operation": "discover",
+//        "deviceId": "",
+//        "deviceState": ""
+//    });
 
 function sendDiscoveryReq(){
     console.log("--sending discovery request--");
-    websocket.send(discvryReq);
+    websocket.send(reqDiscover);
 }
 
 //Action on Error

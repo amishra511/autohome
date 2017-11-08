@@ -5,7 +5,12 @@
  */
 package socket.communicate;
 
+/**
+ *
+ * @author Ashish
+ */
 import java.util.List;
+import socket.upnp.Device;
 
 /**
  *
@@ -32,3 +37,4 @@ public class Response {
     }
     
 }
+

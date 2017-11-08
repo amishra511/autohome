@@ -3,8 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package socket.upnp;
+package socket.communicate;
 
+/**
+ *
+ * @author Ashish
+ */
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
@@ -137,3 +141,4 @@ public class Device {
 
     
 }
+

@@ -1,0 +1,57 @@
+{
+   "request":{
+      "operation":"discover",
+      "deviceId":"test",
+      "deviceState":"1"
+   },
+   "response":{
+      "deviceDetails":[
+         {
+            "deviceType":"urn:Belkin:device:controllee:1",
+            "deviceName":"Wemo Mini",
+            "manufacturer":"Belkin International Inc.",
+            "modelName":"Socket",
+            "modelDesc":"Belkin Plugin Socket 1.0",
+            "modelUrl":null,
+            "serialNumber":null,
+            "udn":null,
+            "upc":null,
+            "macAddress":null,
+            "binaryState":null,
+            "hostAddress":"10.0.0.191",
+            "deviceState":"0"
+         },
+         {
+            "deviceType":"urn:schemas-upnp-org:device:InternetGatewayDevice:1",
+            "deviceName":"Arris TG1682G",
+            "manufacturer":"Arris Group, Inc",
+            "modelName":"TG1682G",
+            "modelDesc":"DOCSIS 3.0 Cable Modem Gateway Device",
+            "modelUrl":null,
+            "serialNumber":null,
+            "udn":null,
+            "upc":null,
+            "macAddress":null,
+            "binaryState":null,
+            "hostAddress":"10.0.0.1",
+            "deviceState":"0"
+         },
+         {
+            "deviceType":"urn:schemas-upnp-org:device:Basic:1",
+            "deviceName":"DCS-2630L (10.0.0.94)",
+            "manufacturer":"D-Link",
+            "modelName":"DCS-2630L",
+            "modelDesc":"Internet Camera.",
+            "modelUrl":null,
+            "serialNumber":null,
+            "udn":null,
+            "upc":null,
+            "macAddress":null,
+            "binaryState":null,
+            "hostAddress":"10.0.0.94",
+            "deviceState":"0"
+         }
+      ],
+      "error":null
+   }
+}

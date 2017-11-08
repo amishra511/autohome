@@ -26,6 +26,7 @@ import socket.upnp.Device;
  * @author Ashish
  */
 public class GenericUtils {
+
     private static final String LOCAL_IP_ADDRESS = "10.0.0.33"; //Use Ipconfig and get local Ip address for Wireless Interface
     private static final String UPNP_IP_ADDRESS = "239.255.255.250";
     private static final String MULTICAST_IP_ADDRESS = "0.0.0.0";
@@ -34,13 +35,13 @@ public class GenericUtils {
     private static final String DEVICE_TYPE_UPNP_ROOT = "upnp:rootdevice";
     private static final Integer LISTEN_WAIT_TIME = 10; //In seconds
 
-    public static List findDevices(){
+    public static List findDevices() {
         sendDiscoveryRequest();
         return listenDiscoveryResponse();
     }
     
-     private static void sendDiscoveryRequest() {
-         
+    private static void sendDiscoveryRequest() {
+        
         try {
             InetSocketAddress socketAddress = new InetSocketAddress(InetAddress.getByName(UPNP_IP_ADDRESS), UPNP_PORT);
             MulticastSocket socket = new MulticastSocket(null);
@@ -55,7 +56,7 @@ public class GenericUtils {
                 packet.append("ST: ").append(DEVICE_TYPE_UPNP_ROOT).append("\r\n").append("\r\n"); //Gives belkin
 //            packet.append( "ST: " ).append( "urn:Belkin:device:controllee:1" ).append( "\r\n" ).append( "\r\n" ); //Gives belkin
                 byte[] data = packet.toString().getBytes();
-                System.out.println("sending discovery packet"+ packet.toString());
+                System.out.println("sending discovery packet" + packet.toString());
                 socket.send(new DatagramPacket(data, data.length, socketAddress));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -67,6 +68,7 @@ public class GenericUtils {
             e1.printStackTrace();
         }
     }
+
     private static List listenDiscoveryResponse() {
         List devList = new ArrayList();
         try {
@@ -75,11 +77,11 @@ public class GenericUtils {
             recSocket.setTimeToLive(10);
             recSocket.setSoTimeout(1000);
             recSocket.joinGroup(InetAddress.getByName(UPNP_IP_ADDRESS));
-
+            
             int timer = 0;
 //        while (timer<2) {  //inService is a variable controlled by a thread to stop the listener
             for (long stop = System.nanoTime() + TimeUnit.SECONDS.toNanos(LISTEN_WAIT_TIME); stop > System.nanoTime();) {
-
+                
                 byte[] buf = new byte[2048];
                 DatagramPacket input = new DatagramPacket(buf, buf.length);
                 try {
@@ -87,7 +89,7 @@ public class GenericUtils {
                     String data = new String(input.getData());
                     String hostName = input.getAddress().getHostName();
                     Device retDevc = getUpnpDevice(data);
-                    if(null != retDevc){
+                    if (null != retDevc) {
                         retDevc.setHostAddress(hostName);
                         devList.add(retDevc);
                     }
@@ -120,48 +122,48 @@ public class GenericUtils {
         }
         return dvc;
     }
-     public static Device getDeviceDetails(String path){
+
+    public static Device getDeviceDetails(String path) {
         Device devc = new Device();
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();       
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();        
         try {
-             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             URL url = new URL(path);
             InputStream stream = url.openStream();
             Document doc = docBuilder.parse(stream);
             doc.getDocumentElement().normalize();
 //            System.out.println("Root element of the doc is "
 //                    + doc.getDocumentElement().getNodeName());
-            NodeList nList =  doc.getElementsByTagName("device");
+            NodeList nList = doc.getElementsByTagName("device");
             Node device = nList.item(0);
             NodeList devProp = device.getChildNodes();
-            for(int i =0; i<devProp.getLength(); i++){
-               Node prop = devProp.item(i);
-               if("deviceType".equalsIgnoreCase(prop.getNodeName())){
-                   System.out.println("Device Type:"+ prop.getTextContent());
-                   devc.setDeviceType(prop.getTextContent());
+            for (int i = 0; i < devProp.getLength(); i++) {
+                Node prop = devProp.item(i);
+                if ("deviceType".equalsIgnoreCase(prop.getNodeName())) {
+                    System.out.println("Device Type:" + prop.getTextContent());
+                    devc.setDeviceType(prop.getTextContent());
                 }
-               if("friendlyName".equalsIgnoreCase(prop.getNodeName())){
-                   System.out.println("Device Name:"+ prop.getTextContent());
-                   devc.setDeviceName(prop.getTextContent());
-               }
-               if("manufacturer".equalsIgnoreCase(prop.getNodeName())){
-                   System.out.println("Device manufacturer:"+ prop.getTextContent());
-                   devc.setManufacturer(prop.getTextContent());
-               }
-               if("modelName".equalsIgnoreCase(prop.getNodeName())){
-                   System.out.println("Device manufacturer:"+ prop.getTextContent());
-                   devc.setModelName(prop.getTextContent());
-               }
-               if("modelDescription".equalsIgnoreCase(prop.getNodeName())){
-                   System.out.println("Device manufacturer:"+ prop.getTextContent());
-                   devc.setModelDesc(prop.getTextContent());
-               }
-               
+                if ("friendlyName".equalsIgnoreCase(prop.getNodeName())) {
+                    System.out.println("Device Name:" + prop.getTextContent());
+                    devc.setDeviceName(prop.getTextContent());
+                }
+                if ("manufacturer".equalsIgnoreCase(prop.getNodeName())) {
+                    System.out.println("Device manufacturer:" + prop.getTextContent());
+                    devc.setManufacturer(prop.getTextContent());
+                }
+                if ("modelName".equalsIgnoreCase(prop.getNodeName())) {
+                    System.out.println("Device manufacturer:" + prop.getTextContent());
+                    devc.setModelName(prop.getTextContent());
+                }
+                if ("modelDescription".equalsIgnoreCase(prop.getNodeName())) {
+                    System.out.println("Device manufacturer:" + prop.getTextContent());
+                    devc.setModelDesc(prop.getTextContent());
+                }
+                devc.setDeviceState("0");
             }
             
-                    
         } catch (Exception exp) {
-                exp.printStackTrace();
+            exp.printStackTrace();
         }
         return devc;
     }
