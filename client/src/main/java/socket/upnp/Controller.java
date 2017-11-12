@@ -24,9 +24,12 @@ import socket.upnp.utils.GenericUtils;
  * @author Ashish
  */
 public class Controller {
+     private List<Device> networkDevices;
+
+  
 
     public Controller() {
-
+            networkDevices = new ArrayList<>();
     }
 
     public static void main(String[] args) {
@@ -59,31 +62,44 @@ public class Controller {
 //        catch(Exception exp){
 //            exp.printStackTrace();
 //        }
+
+     GenericUtils.findDevices();
     }
 
     public String getRespJson(Payload reqPld) {
         String respJson = null;
         ObjectMapper mapper = new ObjectMapper();
         try {
-            respJson = mapper.writeValueAsString(getRespPayload(reqPld));
+            respJson = mapper.writeValueAsString(processRequest(reqPld));
         } catch (JsonProcessingException jexp) {
             jexp.printStackTrace();
         }
         return respJson;
     }
 
-    public Payload getRespPayload(Payload pld) {
+    public Payload processRequest(Payload pld) {
         Payload resPld = new Payload();
         Request req = pld.getRequest();
         if (null != req) {
             if (null != req.getOperation()) {
                 if ("discover".equals(req.getOperation().trim())) {
-                    List<Device> deviceDetails = GenericUtils.findDevices();
+                    List deviceDetails = GenericUtils.findDevices();
+                    networkDevices = deviceDetails;
+                    System.out.println("device list length: "+deviceDetails.size());
                     resPld.setRequest(pld.getRequest());
                     Response resp = new Response();
-                    resp.setDeviceDetails(deviceDetails);
+                    resp.setDeviceDetails(GenericUtils.copyDeviceDetails(deviceDetails));
                     resPld.setResponse(resp);
                 }
+//                if("flipState".equals(req.getOperation().trim())){
+//                    if(null != networkDevices){
+//                        for(Device dev: networkDevices){
+//                            if(req.getDeviceId().equals(dev.getUdn())){
+//                                
+//                            }
+//                        }
+//                      }
+//                }
             } else {
                 //No operation specified in request
             }
@@ -91,5 +107,13 @@ public class Controller {
             //No request found in the payload
         }
         return resPld;
+    }
+    
+    public List<Device> getNetworkDevices() {
+        return networkDevices;
+    }
+
+    public void setNetworkDevices(List<Device> networkDevices) {
+        this.networkDevices = networkDevices;
     }
 }

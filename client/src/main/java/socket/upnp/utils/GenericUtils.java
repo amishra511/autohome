@@ -20,6 +20,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import socket.upnp.Device;
+import socket.upnp.DeviceGeneral;
 
 /**
  *
@@ -70,7 +71,7 @@ public class GenericUtils {
     }
 
     private static List listenDiscoveryResponse() {
-        List devList = new ArrayList();
+        List devList = new ArrayList<>();
         try {
             MulticastSocket recSocket = new MulticastSocket(null);
             recSocket.bind(new InetSocketAddress(InetAddress.getByName(MULTICAST_IP_ADDRESS), MULTICAST_PORT));
@@ -89,8 +90,8 @@ public class GenericUtils {
                     String data = new String(input.getData());
                     String hostName = input.getAddress().getHostName();
                     Device retDevc = getUpnpDevice(data);
+                    System.out.println("Device General: "+retDevc.getDeviceGeneral().toString());
                     if (null != retDevc) {
-                        retDevc.setHostAddress(hostName);
                         devList.add(retDevc);
                     }
 //                    System.out.println("Data: " + rawResponse);
@@ -125,6 +126,7 @@ public class GenericUtils {
 
     public static Device getDeviceDetails(String path) {
         Device devc = new Device();
+        DeviceGeneral devGenral = new DeviceGeneral();
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();        
         try {
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -141,30 +143,61 @@ public class GenericUtils {
                 Node prop = devProp.item(i);
                 if ("deviceType".equalsIgnoreCase(prop.getNodeName())) {
                     System.out.println("Device Type:" + prop.getTextContent());
-                    devc.setDeviceType(prop.getTextContent());
+                    devGenral.setDeviceType(prop.getTextContent());
                 }
                 if ("friendlyName".equalsIgnoreCase(prop.getNodeName())) {
                     System.out.println("Device Name:" + prop.getTextContent());
-                    devc.setDeviceName(prop.getTextContent());
+                    devGenral.setDeviceName(prop.getTextContent());
                 }
                 if ("manufacturer".equalsIgnoreCase(prop.getNodeName())) {
                     System.out.println("Device manufacturer:" + prop.getTextContent());
-                    devc.setManufacturer(prop.getTextContent());
+                    devGenral.setManufacturer(prop.getTextContent());
                 }
                 if ("modelName".equalsIgnoreCase(prop.getNodeName())) {
                     System.out.println("Device manufacturer:" + prop.getTextContent());
-                    devc.setModelName(prop.getTextContent());
+                    devGenral.setModelName(prop.getTextContent());
                 }
                 if ("modelDescription".equalsIgnoreCase(prop.getNodeName())) {
                     System.out.println("Device manufacturer:" + prop.getTextContent());
-                    devc.setModelDesc(prop.getTextContent());
+                    devGenral.setModelDesc(prop.getTextContent());
                 }
-                devc.setDeviceState("0");
+                if("UDN".equalsIgnoreCase(prop.getNodeName())){
+                    System.out.println("Device manufacturer:" + prop.getTextContent());
+                    devGenral.setUdn(prop.getTextContent());
+                }
+                devGenral.setDeviceState("0");
+                //Add general device data to device
+                devc.setDeviceGeneral(devGenral);
+                //Add other device attributes
+                if("macAddress".equalsIgnoreCase(prop.getNodeName())){
+                    System.out.println("Device MAC:" + prop.getTextContent());
+                    devc.setMacAddress(prop.getTextContent());
+                }
+                if("serialNumber".equalsIgnoreCase(prop.getNodeName())){
+                    System.out.println("Device Serial #:" + prop.getTextContent());
+                    devc.setSerialNumber(prop.getTextContent());
+                }
+                if("UPC".equalsIgnoreCase(prop.getNodeName())){
+                    System.out.println("Device UPC #:" + prop.getTextContent());
+                    devc.setUpc(prop.getTextContent());
+                }
+                devc.setMacAddress(LOCAL_IP_ADDRESS);
+              //Get full host address from path param
+              URL devUrl = new URL(path);
+              devc.setHostAddress(devUrl.getProtocol()+"://"+devUrl.getHost()+":"+devUrl.getPort());
             }
             
         } catch (Exception exp) {
             exp.printStackTrace();
         }
         return devc;
+    }
+    
+    public static List copyDeviceDetails(List<Device> devList){
+        List<DeviceGeneral> genDevic = new ArrayList<>();
+        for(Device dev: devList){
+            genDevic.add(dev.getDeviceGeneral());
+        }
+        return genDevic;
     }
 }

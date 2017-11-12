@@ -20,8 +20,7 @@ function writeToScreen(message) {
    var reqDiscover = JSON.stringify({"request":{
         "operation": "discover",
         "deviceId": "test",
-        "deviceState": "1"},
-    "response":null
+        "deviceState": "1"}
     });
 
 

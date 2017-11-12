@@ -12,7 +12,7 @@ import java.util.List;
  * @author Ashish
  */
 public class Response {
-    private List<Device> deviceDetails;
+    private List<DeviceGeneral> deviceDetails;
     private Error error;
 
     public List getDeviceDetails() {

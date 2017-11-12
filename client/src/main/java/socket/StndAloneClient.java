@@ -5,11 +5,8 @@
  */
 package socket;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
-import java.util.List;
-import javax.json.JsonObject;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.ContainerProvider;
 import javax.websocket.OnMessage;
@@ -17,9 +14,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 import socket.communicate.Payload;
-import socket.communicate.Request;
 import socket.upnp.Controller;
-import socket.upnp.Device;
 
 /**
  *
@@ -31,12 +26,13 @@ public class StndAloneClient {
     private static final Object WAIT_LOCK = new Object();
 //       private static final String ENDPOINT_URL = "ws://homeau2ma10n-env.pke2qi6wrq.us-east-1.elasticbeanstalk.com/upnpendpoint";
     private static final String ENDPOINT_URL = "ws://localhost:8080/websocket/upnpendpoint";
+    private Controller controller;
 
-//    @OnOpen
-//    public void onOpen(Session userSession) {
-//        System.out.println("Opening websocket");
-//        this.userSession = userSession;
-//    }
+    @OnOpen
+    public void onOpen(Session userSession) {
+        System.out.println("Opening websocket");
+        this.controller = new Controller();
+    }
     @OnMessage
     public void onMessage(String param, Session session) {
         try {
@@ -44,8 +40,8 @@ public class StndAloneClient {
             System.out.println(param);
             ObjectMapper mapper = new ObjectMapper();
             Payload req = mapper.readValue(param, Payload.class);
-            Controller upnpCont = new Controller();
-            session.getBasicRemote().sendText(upnpCont.getRespJson(req));
+            session.getBasicRemote().sendText(controller.getRespJson(req));
+            System.out.println("Network Device count:"+ controller.getNetworkDevices().size());
         } catch (Exception exp) {
             exp.printStackTrace();
         }

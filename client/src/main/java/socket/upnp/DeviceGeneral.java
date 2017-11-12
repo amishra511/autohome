@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package socket.communicate;
+package socket.upnp;
 
 /**
  *
@@ -15,19 +15,14 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  *
  * @author Ashish
  */
-public class Device {
+public class DeviceGeneral {
       private String deviceType;
     private String deviceName;
     private String manufacturer;
     private String modelName;
     private String modelDesc;
     private String modelUrl;
-    private String serialNumber;
     private String udn;
-    private String upc;
-    private String macAddress;
-    private String binaryState;
-    private String hostAddress;
     private String deviceState;
 
     public String getDeviceState() {
@@ -36,14 +31,6 @@ public class Device {
 
     public void setDeviceState(String deviceState) {
         this.deviceState = deviceState;
-    }
-
-    public String getHostAddress() {
-        return hostAddress;
-    }
-
-    public void setHostAddress(String hostAddress) {
-        this.hostAddress = hostAddress;
     }
 
     public String getDeviceType() {
@@ -94,44 +81,12 @@ public class Device {
         this.modelUrl = modelUrl;
     }
 
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
     public String getUdn() {
         return udn;
     }
 
     public void setUdn(String udn) {
         this.udn = udn;
-    }
-
-    public String getUpc() {
-        return upc;
-    }
-
-    public void setUpc(String upc) {
-        this.upc = upc;
-    }
-
-    public String getMacAddress() {
-        return macAddress;
-    }
-
-    public void setMacAddress(String macAddress) {
-        this.macAddress = macAddress;
-    }
-
-    public String getBinaryState() {
-        return binaryState;
-    }
-
-    public void setBinaryState(String binaryState) {
-        this.binaryState = binaryState;
     }
     
     @Override
